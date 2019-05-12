@@ -4,3 +4,6 @@ build/
 
 # Java
 *.class
+
+# Generated images
+test.png
