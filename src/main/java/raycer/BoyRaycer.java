@@ -1,6 +1,10 @@
 package raycer;
 
 import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class BoyRaycer {
 	
@@ -13,21 +17,27 @@ public class BoyRaycer {
 
 	public static void render() {
 
-		ArrayList<ArrayList<Float>> framebuffer = new ArrayList<ArrayList<Float>>(width * height);
+		BufferedImage framebuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		File imageFile = null;
 
-		for (int index = 0; index < width * height; index++) {
-			framebuffer.add(new ArrayList<Float>(3));
-		}	
-
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				float red = j/((float) height);
-				float green =  i/((float) width);
-				ArrayList<Float> currentPixel = new ArrayList<Float>(3);
-				
-				framebuffer.set(i + j * width, currentPixel);
+		for (int i = 0; i < width; i ++) {
+			for (int j = 0; j < height; j ++) {
+				int a = 255;
+				int r = (256 * i) / width;
+				int g = (256 * j) / height;
+				int b = 0;
+				int pixel = (a << 24) | (r << 16) | (g << 8) | b;
+				framebuffer.setRGB(i, j, pixel);
 			}
 		}
+
+		try {
+			imageFile = new File("./test.png");
+			ImageIO.write(framebuffer, "png", imageFile);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+
 	}
 }
 
