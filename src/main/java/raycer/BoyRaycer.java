@@ -17,8 +17,30 @@ public class BoyRaycer {
 
 	public static void render() {
 
-		BufferedImage framebuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage frameBuffer = createImage();
+		saveImage(frameBuffer);
+	}
+
+	public static void saveImage(BufferedImage frameBuffer) {
+
 		File imageFile = null;
+
+		try {
+			imageFile = new File("./test.png");
+			ImageIO.write(frameBuffer, "png", imageFile);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+	}
+
+
+	public static BufferedImage createImage() {
+		return createImage(1024, 768);
+	}
+
+	public static BufferedImage createImage(int width, int height) {
+
+		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
@@ -27,17 +49,12 @@ public class BoyRaycer {
 				int g = (256 * j) / height;
 				int b = 0;
 				int pixel = (a << 24) | (r << 16) | (g << 8) | b;
-				framebuffer.setRGB(i, j, pixel);
+				frameBuffer.setRGB(i, j, pixel);
 			}
 		}
 
-		try {
-			imageFile = new File("./test.png");
-			ImageIO.write(framebuffer, "png", imageFile);
-		} catch (IOException e) {
-			System.out.println(e);
-		}
-
+		return frameBuffer;
 	}
+
 }
 
