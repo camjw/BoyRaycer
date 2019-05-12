@@ -13,7 +13,11 @@ public class BoyRaycer {
 
 	public static void render() {
 
-		ArrayList<ArrayList<Float>> framebuffer = new ArrayList<ArrayList<Float>>();
+		ArrayList<ArrayList<Float>> framebuffer = new ArrayList<ArrayList<Float>>(width * height);
+
+		for (int index = 0; index < width * height; index++) {
+			framebuffer.add(new ArrayList<Float>(3));
+		}	
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -21,7 +25,7 @@ public class BoyRaycer {
 				float green =  i/((float) width);
 				ArrayList<Float> currentPixel = new ArrayList<Float>(3);
 				
-				framebuffer.set(i * j * width, currentPixel);
+				framebuffer.set(i + j * width, currentPixel);
 			}
 		}
 	}
