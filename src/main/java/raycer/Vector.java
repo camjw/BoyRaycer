@@ -33,4 +33,12 @@ public class Vector {
 	public final double dot(Vector other) {
 		return this.x * other.x + this.y * other.y + this.z * other.z;
 	}
+
+	public final Vector normalise() {
+		return new Vector(this.x / this.magnitude(), this.y / this.magnitude(), this.x / this.magnitude());
+	}
+
+	public final double magnitude() {
+		return this.dot(this);
+	}
 }

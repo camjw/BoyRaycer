@@ -21,7 +21,7 @@ public class Sphere {
 	public boolean intersectsRay(Vector origin, Vector direction) {
 		Vector originToCentre = this.centre.subtract(origin);
 
-		double a = direction.dot(direction);
+		double a = direction.magnitude();
 		double b = 2.0 * originToCentre.dot(direction);
 		double c = originToCentre.dot(originToCentre) - Math.pow(this.radius, 2);
 

@@ -10,13 +10,18 @@ public class Renderer {
 	
 	static int width = 1024;
 	static int height = 768;
+	static double FOV = Math.PI / 2.0;
+
+	static int BACKGROUND_COLOUR = (255 << 24) | (50 << 16) | (34 << 8) | 250;
+	static int SPHERE_COLOUR = (255 << 24) | (250 << 16) | (250 << 8) | 30;
 	
 	public Renderer() {
 		
 	}
 
 	public static void render() {
-		BufferedImage frameBuffer = createImage();
+		Vector origin = new Vector(0.0, 0.0, 0.0);
+		BufferedImage frameBuffer = createImage(origin);
 		saveImage(frameBuffer);
 	}
 
@@ -31,21 +36,29 @@ public class Renderer {
 		}
 	}
 
-
-	public static BufferedImage createImage() {
-		return createImage(1024, 768);
+	public static int colourPixel(Vector origin, Vector direction, Sphere sphere) {
+		if (sphere.intersectsRay(origin, direction)) {
+			return SPHERE_COLOUR;
+		}
+		return BACKGROUND_COLOUR;
 	}
 
-	public static BufferedImage createImage(int width, int height) {
+
+	public static BufferedImage createImage(Vector lightSource) {
+		return createImage(lightSource, 1024, 768);
+	}
+
+	public static BufferedImage createImage(Vector lightSource, int width, int height) {
 		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
+		Sphere renderedSphere = new Sphere(new Vector(-3.0, 0.0, -16.0), 20.0);
+		
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
-				int a = 255;
-				int r = (256 * i) / width;
-				int g = (256 * j) / height;
-				int b = 0;
-				int pixel = (a << 24) | (r << 16) | (g << 8) | b;
+				double x =  (2 * (i + 0.5) / (double) width  - 1.0) * Math.tan(FOV / 2.0) * width / (double) height;
+            			double y = -(2 * (j + 0.5) / (double) height - 1.0) * Math.tan(FOV / 2.0);
+            			Vector direction = new Vector(x, y, -1.0).normalise();
+				int pixel = colourPixel(lightSource, direction, renderedSphere);
 				frameBuffer.setRGB(i, j, pixel);
 			}
 		}
