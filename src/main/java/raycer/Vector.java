@@ -22,7 +22,15 @@ public class Vector {
 		return this.add(other.times(-1.0F));
 	}
 
+	public final String toString() {
+		return String.format("<Vector x: %f, y: %f, z: %f>", this.x, this.y, this.z);
+	}
+
 	public final void print() {
-		System.out.printf("<Vector x: %f, y: %f, z: %f>\n", this.x, this.y, this.z);
+		System.out.println(this.toString());
+	}
+
+	public final double dot(Vector other) {
+		return this.x * other.x + this.y * other.y + this.z * other.z;
 	}
 }
