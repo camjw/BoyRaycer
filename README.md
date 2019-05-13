@@ -4,4 +4,4 @@ Raytracer written in Java
 
 ## Examples
 
-![Wow these spheres are difusely lit!!](images/litsphere.png)
+![Wow these spheres are difusely lit!!](images/litspheres.png)
