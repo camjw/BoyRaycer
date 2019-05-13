@@ -4,10 +4,12 @@ public class Sphere {
 
 	Vector centre;
 	double radius;
+	public RGBColour colour;
 
-	public Sphere(Vector centre, double radius) {
+	public Sphere(Vector centre, double radius, RGBColour colour) {
 		this.centre = centre;
 		this.radius = radius;
+		this.colour = colour;
 	}
 
 	public final String toString() {
@@ -18,7 +20,7 @@ public class Sphere {
 		System.out.println(this.toString());
 	}
 
-	public boolean intersectsRay(Vector origin, Vector direction) {
+	public double distanceAlongRay(Vector origin, Vector direction) {
 		Vector originToCentre = this.centre.subtract(origin);
 
 		double a = direction.magnitude();
@@ -28,12 +30,11 @@ public class Sphere {
 		double discriminant = Math.pow(b, 2) - 4.0 * a * c;
 
 		if (discriminant < 0) {
-			return false;
+			return -1.0;
 		}
-		// if (-b + Math.sqrt(discriminant) < 0) {
-			// System.out.println("Case B");
-			// return false;
-		// }
-		return true;
+		if (b + Math.sqrt(discriminant) < 0) {
+			return -1.0;
+		}
+		return b - Math.sqrt(discriminant);
 	}
 }

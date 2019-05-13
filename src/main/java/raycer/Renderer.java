@@ -10,18 +10,18 @@ public class Renderer {
 	
 	static int width = 1024;
 	static int height = 768;
-	static double FOV = Math.PI / 2.0;
 
 	static RGBColour BACKGROUND_COLOUR = new RGBColour(178, 236, 255);
-	static RGBColour SPHERE_COLOUR = new RGBColour(230, 15, 53);
+	static RGBColour RED_SPHERE_COLOUR = new RGBColour(230, 15, 53);
+	static RGBColour YELLOW_SPHERE_COLOUR = new RGBColour(30, 200, 200);
 	
 	public Renderer() {
 		
 	}
 
 	public static void render() {
-		Vector origin = new Vector(0.0, 0.0, 0.0);
-		BufferedImage frameBuffer = createImage(origin);
+		Camera camera = new Camera(new Vector(0.0, 0.0, 0.0), Math.PI / 2.0);
+		BufferedImage frameBuffer = createImage(camera);
 		saveImage(frameBuffer);
 	}
 
@@ -36,29 +36,40 @@ public class Renderer {
 		}
 	}
 
-	public static int colourPixel(Vector origin, Vector direction, Sphere sphere) {
-		if (sphere.intersectsRay(origin, direction)) {
-			return SPHERE_COLOUR.toPixel();
+	public static int traceRay(Vector origin, Vector direction, ArrayList<Sphere> renderedSpheres) {
+		double distanceToCamera = 10000.0;
+		RGBColour pixelColour = BACKGROUND_COLOUR;
+
+		for (Sphere sphere: renderedSpheres) {
+			double distanceToSphere = sphere.distanceAlongRay(origin, direction);
+			if (distanceToSphere > 0 && distanceToSphere < distanceToCamera) {
+				distanceToCamera = distanceToSphere;
+				pixelColour = sphere.colour;
+			}
 		}
-		return BACKGROUND_COLOUR.toPixel();
+		return pixelColour.toInt();
 	}
 
 
-	public static BufferedImage createImage(Vector lightSource) {
-		return createImage(lightSource, 1024, 768);
+	public static BufferedImage createImage(Camera camera) {
+		return createImage(camera, 1024, 768);
 	}
 
-	public static BufferedImage createImage(Vector lightSource, int width, int height) {
+	public static BufferedImage createImage(Camera camera, int width, int height) {
 		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-		Sphere renderedSphere = new Sphere(new Vector(0.0, 0.0, -10.0), 2.0);
-		
+		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>(10);
+		renderedSpheres.add(new Sphere(new Vector(0.0, 0.0, -10.0), 2.0, RED_SPHERE_COLOUR));	
+		renderedSpheres.add(new Sphere(new Vector(3.0, 5.0, -10.0), 2.0, RED_SPHERE_COLOUR));	
+		renderedSpheres.add(new Sphere(new Vector(-9.0, 9.0, -50.0), 9.0, YELLOW_SPHERE_COLOUR));	
+		renderedSpheres.add(new Sphere(new Vector(-3.0, -3.0, -8.0), 2.0, YELLOW_SPHERE_COLOUR));	
+
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
-				double x =  (2 * (i + 0.5) / (double) width  - 1.0) * Math.tan(FOV / 2.0) * width / (double) height;
-            			double y = -(2 * (j + 0.5) / (double) height - 1.0) * Math.tan(FOV / 2.0);
+				double x =  (2 * (i + 0.5) / (double) width  - 1.0) * Math.tan(camera.FOV / 2.0) * width / (double) height;
+            			double y = -(2 * (j + 0.5) / (double) height - 1.0) * Math.tan(camera.FOV / 2.0);
             			Vector direction = new Vector(x, y, -1.0).normalise();
-				int pixel = colourPixel(lightSource, direction, renderedSphere);
+				int pixel = traceRay(camera.location, direction, renderedSpheres);
 				frameBuffer.setRGB(i, j, pixel);
 			}
 		}

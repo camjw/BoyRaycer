@@ -12,7 +12,7 @@ public class RGBColour {
 		this.b = b;
 	}
 
-	public final int toPixel() {
+	public final int toInt() {
 		return (255 << 24) | (r << 16) | (g << 8) | b;
 	}
 
