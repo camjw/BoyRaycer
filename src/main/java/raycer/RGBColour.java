@@ -17,6 +17,11 @@ public class RGBColour {
 	}
 
 	public RGBColour scale(double intensity) {
-		return new RGBColour( (int) ((double) this.r * intensity), (int) ((double) this.g * intensity), (int) ((double) this.b * intensity));
+		return new RGBColour(scaleComponent(this.r, intensity), scaleComponent(this.g, intensity), scaleComponent(this.b, intensity));
 	}
+
+	private int scaleComponent(int component, double intensity) {
+		return Math.min(255, (int) ((double) component * intensity));
+	}
+
 }

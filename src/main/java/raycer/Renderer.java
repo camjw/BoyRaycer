@@ -58,7 +58,7 @@ public class Renderer {
 		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, YELLOW_SPHERE_COLOUR));	
 
 		ArrayList<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector(-20.0, 20.0, 20.0), 1));
+		lights.add(new Light(new Vector(-20.0, 20.0, 20.0), 1.5));
 
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
