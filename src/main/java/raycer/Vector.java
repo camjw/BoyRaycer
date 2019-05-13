@@ -19,7 +19,7 @@ public class Vector {
 	}
 
 	public final Vector subtract(Vector other) {
-		return this.add(other.times(-1.0F));
+		return this.add(other.times(-1.0));
 	}
 
 	public final String toString() {
@@ -35,7 +35,8 @@ public class Vector {
 	}
 
 	public final Vector normalise() {
-		return new Vector(this.x / this.magnitude(), this.y / this.magnitude(), this.x / this.magnitude());
+		double magnitude = this.magnitude();
+		return new Vector(this.x / magnitude, this.y / magnitude, this.z / magnitude);
 	}
 
 	public final double magnitude() {

@@ -25,7 +25,7 @@ public class Sphere {
 		double b = 2.0 * originToCentre.dot(direction);
 		double c = originToCentre.dot(originToCentre) - Math.pow(this.radius, 2);
 
-		double discriminant = Math.pow(b, 2) - 4 * a * c;
+		double discriminant = Math.pow(b, 2) - 4.0 * a * c;
 
 		if (discriminant < 0) {
 			return false;
