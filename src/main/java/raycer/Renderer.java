@@ -12,8 +12,8 @@ public class Renderer {
 	static int height = 768;
 	static double FOV = Math.PI / 2.0;
 
-	static int BACKGROUND_COLOUR = (255 << 24) | (178 << 16) | (236 << 8) | 255;
-	static int SPHERE_COLOUR = (255 << 24) | (230 << 16) | (15 << 8) | 53;
+	static RGBColour BACKGROUND_COLOUR = new RGBColour(178, 236, 255);
+	static RGBColour SPHERE_COLOUR = new RGBColour(230, 15, 53);
 	
 	public Renderer() {
 		
@@ -38,9 +38,9 @@ public class Renderer {
 
 	public static int colourPixel(Vector origin, Vector direction, Sphere sphere) {
 		if (sphere.intersectsRay(origin, direction)) {
-			return SPHERE_COLOUR;
+			return SPHERE_COLOUR.toPixel();
 		}
-		return BACKGROUND_COLOUR;
+		return BACKGROUND_COLOUR.toPixel();
 	}
 
 
@@ -51,7 +51,7 @@ public class Renderer {
 	public static BufferedImage createImage(Vector lightSource, int width, int height) {
 		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-		Sphere renderedSphere = new Sphere(new Vector(3.0, 0.0, 16.0), 20.0);
+		Sphere renderedSphere = new Sphere(new Vector(0.0, 0.0, -10.0), 2.0);
 		
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {

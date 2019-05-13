@@ -29,9 +29,11 @@ public class Sphere {
 
 		if (discriminant < 0) {
 			return false;
-		} else if (-b + Math.sqrt(discriminant) < 0) {
-			return false;
 		}
+		// if (-b + Math.sqrt(discriminant) < 0) {
+			// System.out.println("Case B");
+			// return false;
+		// }
 		return true;
 	}
 }
