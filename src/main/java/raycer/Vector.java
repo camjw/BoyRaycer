@@ -14,12 +14,12 @@ public class Vector {
 		return new Vector(this.x + other.x, this.y + other.y, this.z + other.z);
 	}
 
-	public final Vector times(double lambda) {
+	public final Vector scale(double lambda) {
 		return new Vector(lambda * this.x, lambda * this.y, lambda * this.z);
 	}
 
 	public final Vector subtract(Vector other) {
-		return this.add(other.times(-1.0));
+		return this.add(other.scale(-1.0));
 	}
 
 	public final String toString() {
@@ -35,11 +35,10 @@ public class Vector {
 	}
 
 	public final Vector normalise() {
-		double magnitude = this.magnitude();
-		return new Vector(this.x / magnitude, this.y / magnitude, this.z / magnitude);
+		return new Vector(this.x, this.y, this.z).scale(1.0 / this.magnitude());
 	}
 
 	public final double magnitude() {
-		return this.dot(this);
+		return Math.sqrt(this.dot(this));
 	}
 }

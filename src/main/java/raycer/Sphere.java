@@ -2,7 +2,7 @@ package raycer;
 
 public class Sphere {
 
-	Vector centre;
+	public Vector centre;
 	double radius;
 	public RGBColour colour;
 
@@ -21,7 +21,7 @@ public class Sphere {
 	}
 
 	public double distanceAlongRay(Vector origin, Vector direction) {
-		Vector originToCentre = this.centre.subtract(origin);
+		Vector originToCentre = origin.subtract(this.centre);
 
 		double a = direction.magnitude();
 		double b = 2.0 * originToCentre.dot(direction);
@@ -32,9 +32,20 @@ public class Sphere {
 		if (discriminant < 0) {
 			return -1.0;
 		}
-		if (b + Math.sqrt(discriminant) < 0) {
-			return -1.0;
+
+		double numerator = -b - Math.sqrt(discriminant);
+		if (numerator > 0.0) {
+			return numerator / (2.0 * a);
 		}
-		return b - Math.sqrt(discriminant);
+		
+		numerator = -b + Math.sqrt(discriminant);
+		if (numerator > 0.0) {
+			return numerator / (2.0 * a);
+		}
+		return -1.0;
+	}
+
+	public Vector normalAt(Vector point) {
+		return point.subtract(this.centre).normalise();
 	}
 }
