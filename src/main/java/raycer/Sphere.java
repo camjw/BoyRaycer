@@ -49,7 +49,7 @@ public class Sphere {
 		return point.subtract(this.centre).normalise();
 	}
 
-	public RGBColour colourScaled(double intensity) {
-		return this.material.colourScaled(intensity);
+	public RGBColour colourScaled(double diffuseIntensity, double specularIntensity) {
+		return this.material.colourScaled(diffuseIntensity, specularIntensity);
 	}
 }
