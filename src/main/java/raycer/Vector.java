@@ -41,4 +41,8 @@ public class Vector {
 	public final double magnitude() {
 		return Math.sqrt(this.dot(this));
 	}
+
+	public final Vector reflect(Vector normal) {
+		return this.subtract(normal.scale(2.0 * this.dot(normal)));
+	}
 }

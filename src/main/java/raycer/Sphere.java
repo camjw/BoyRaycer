@@ -4,12 +4,12 @@ public class Sphere {
 
 	public Vector centre;
 	double radius;
-	public RGBColour colour;
+	public Material material;
 
-	public Sphere(Vector centre, double radius, RGBColour colour) {
+	public Sphere(Vector centre, double radius, Material material) {
 		this.centre = centre;
 		this.radius = radius;
-		this.colour = colour;
+		this.material = material;
 	}
 
 	public final String toString() {
@@ -47,5 +47,9 @@ public class Sphere {
 
 	public Vector normalAt(Vector point) {
 		return point.subtract(this.centre).normalise();
+	}
+
+	public RGBColour colourScaled(double intensity) {
+		return this.material.colourScaled(intensity);
 	}
 }

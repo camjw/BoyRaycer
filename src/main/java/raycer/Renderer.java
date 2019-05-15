@@ -8,7 +8,7 @@ public class Renderer {
 	static int width = 1024;
 	static int height = 768;
 
-	static RGBColour BACKGROUND_COLOUR = new RGBColour(178, 236, 255);
+	static RGBColour BACKGROUND_COLOUR = new RGBColour(240, 240, 255);
 	static RGBColour RED_SPHERE_COLOUR = new RGBColour(230, 15, 53);
 	static RGBColour YELLOW_SPHERE_COLOUR = new RGBColour(30, 200, 200);
 	
@@ -33,13 +33,14 @@ public class Renderer {
 	}
 
 	public static RGBColour calculateLightIntensity(Sphere sphere, ArrayList<Light> lights, Vector intersectionPoint) {
-		double totalIntensity = 0.0;
+		double diffuseIntensity = 0.0;
+		double specularIntensity = 0.0;
 		for (Light light: lights) {
 			Vector lightToSphere = light.location.subtract(sphere.centre);
 			Vector lightDirection = lightToSphere.normalise();
-			totalIntensity += light.intensity * Math.max(0.0, lightDirection.dot(sphere.normalAt(intersectionPoint)));
+			diffuseIntensity += light.intensity * Math.max(0.0, lightDirection.dot(sphere.normalAt(intersectionPoint)));
 		}
-		return sphere.colour.scale(totalIntensity);
+		return sphere.colourScaled(diffuseIntensity);
 	}
 
 
@@ -52,13 +53,15 @@ public class Renderer {
 		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
 		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>();
-		renderedSpheres.add(new Sphere(new Vector(-3.0, 0.0, -16.0), 2.0, RED_SPHERE_COLOUR));	
-		renderedSpheres.add(new Sphere(new Vector(-1.0, -1.5, -12.0), 2.0, RED_SPHERE_COLOUR));	
-		renderedSpheres.add(new Sphere(new Vector(1.5, -1.5, -18.0), 3.0, YELLOW_SPHERE_COLOUR));	
-		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, YELLOW_SPHERE_COLOUR));	
+		renderedSpheres.add(new Sphere(new Vector(-3.0, 0.0, -16.0), 2.0, new Material(RED_SPHERE_COLOUR)));	
+		renderedSpheres.add(new Sphere(new Vector(-1.0, -1.5, -12.0), 2.0, new Material(RED_SPHERE_COLOUR)));	
+		renderedSpheres.add(new Sphere(new Vector(1.5, -1.5, -18.0), 3.0, new Material(YELLOW_SPHERE_COLOUR)));
+		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, new Material(YELLOW_SPHERE_COLOUR)));	
 
 		ArrayList<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector(-20.0, 20.0, 20.0), 1.5));
+		lights.add(new Light(new Vector(-20.0, 20.0, 20.0), 0.1));
+		lights.add(new Light(new Vector(30.0, 50.0, -25.0), 0.1));
+    		lights.add(new Light(new Vector(30.0, 20.0,  30.0), 0.1));
 
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
