@@ -10,8 +10,8 @@ public class Renderer {
 
 	static RGBColour BACKGROUND_COLOUR = new RGBColour(240, 240, 255);
 
-	static Material RED_SPHERE_MATERIAL = new Material(new RGBColour(230, 15, 53), 0.5, 10);
-	static Material YELLOW_SPHERE_MATERIAL = new Material(new RGBColour(30, 200, 200), 0.5, 50);
+	static Material RED_SPHERE_MATERIAL = new Material(new RGBColour(230, 15, 53), 0.9, 0.1,  10);
+	static Material YELLOW_SPHERE_MATERIAL = new Material(new RGBColour(30, 200, 200), 0.6, 0.3, 50);
 	
 	public static BufferedImage render() {
 		Camera camera = new Camera(new Vector(0.0, 0.0, 0.0), Math.PI / 2.0);
@@ -41,8 +41,8 @@ public class Renderer {
 			Vector lightDirection = lightToSphere.normalise();
 			Vector sphereNormal = sphere.normalAt(intersectionPoint);
 			diffuseIntensity += light.intensity * Math.max(0.0, lightDirection.dot(sphereNormal));
-			double specularPower = -lightDirection.scale(-1.0).reflect(sphereNormal).dot(direction);
-			specularIntensity += Math.pow(Math.max(0.0, specularPower), sphere.material.specularExponent) * light.intensity;
+			// double specularPower = -lightDirection.scale(-1.0).reflect(sphereNormal).dot(direction);
+			// specularIntensity += Math.pow(Math.max(0.0, specularPower), sphere.material.specularExponent) * light.intensity;
 		}
 		return sphere.colourScaled(diffuseIntensity, specularIntensity);
 	}
@@ -59,7 +59,7 @@ public class Renderer {
 		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>();
 		renderedSpheres.add(new Sphere(new Vector(-3.0, 0.0, -16.0), 2.0, RED_SPHERE_MATERIAL));	
 		renderedSpheres.add(new Sphere(new Vector(-1.0, -1.5, -12.0), 2.0, RED_SPHERE_MATERIAL));	
-		renderedSpheres.add(new Sphere(new Vector(1.5, -1.5, -18.0), 3.0, YELLOW_SPHERE_MATERIAL));
+		renderedSpheres.add(new Sphere(new Vector(1.5, -0.5, -18.0), 3.0, YELLOW_SPHERE_MATERIAL));
 		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, YELLOW_SPHERE_MATERIAL));	
 
 		ArrayList<Light> lights = new ArrayList<Light>();

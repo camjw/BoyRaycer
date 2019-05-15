@@ -21,7 +21,7 @@ public class RGBColour {
 	}
 
 	public RGBColour add(RGBColour other) {
-		return new RGBColour(capComponent(this.r + other.r), capComponent(this.r + other.r), capComponent(this.r + other.r));
+		return new RGBColour(capComponent(this.r + other.r), capComponent(this.g + other.g), capComponent(this.b + other.b));
 	}
 
 	private int capComponent(double component) {
