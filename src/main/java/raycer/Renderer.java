@@ -12,9 +12,10 @@ public class Renderer {
 
 	static Material RED_SPHERE_MATERIAL = new Material(new RGBColour(230, 15, 53), 0.5, 10);
 	static Material YELLOW_SPHERE_MATERIAL = new Material(new RGBColour(30, 200, 200), 0.5, 50);
+
+	static Camera camera = new Camera(new Vector(0.0, 0.0, 0.0), Math.PI / 2.0);
 	
 	public static BufferedImage render() {
-		Camera camera = new Camera(new Vector(0.0, 0.0, 0.0), Math.PI / 2.0);
 		return createImage(camera);
 	}
 
@@ -27,22 +28,45 @@ public class Renderer {
 			if (distanceToSphere > 0 && distanceToSphere < distanceToCamera) {
 				distanceToCamera = distanceToSphere;
 				Vector intersectionPoint = origin.add(direction.scale(distanceToSphere));
-				pixelColour = calculateLightIntensity(sphere, direction, lights, intersectionPoint);
+				pixelColour = calculateLightIntensity(sphere, direction, lights, intersectionPoint, renderedSpheres);
 			}
 		}
 		return pixelColour.toInt();
 	}
 
-	public static RGBColour calculateLightIntensity(Sphere sphere, Vector direction, ArrayList<Light> lights, Vector intersectionPoint) {
+	public static boolean notInShadow(Vector lightOrigin, Vector lightDirection, Sphere targetSphere, ArrayList<Sphere> renderedSpheres) {
+		double distanceToTarget = targetSphere.distanceAlongRay(lightOrigin, lightDirection);
+
+		for (Sphere sphere: renderedSpheres) {
+			double distanceToLight = sphere.distanceAlongRay(lightOrigin, lightDirection);
+			if (distanceToLight < distanceToTarget && distanceToLight > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static double calculateDiffuseIntensity(Light light, Vector lightDirection, Vector sphereNormal) {
+		return light.intensity * Math.max(0.0, -lightDirection.dot(sphereNormal));
+	}
+
+	public static double calculateSpecularIntensity(Light light, Vector lightDirection, Vector sphereNormal, Sphere sphere, Vector direction) {
+		double specularPower = -lightDirection.reflect(sphereNormal).dot(direction);
+		return Math.pow(Math.max(0.0, specularPower), sphere.material.specularExponent) * light.intensity;
+	}
+
+	public static RGBColour calculateLightIntensity(Sphere sphere, Vector direction, ArrayList<Light> lights, Vector intersectionPoint, ArrayList<Sphere> renderedSpheres) {
 		double diffuseIntensity = 0.0;
 		double specularIntensity = 0.0;
 		for (Light light: lights) {
-			Vector lightToSphere = light.location.subtract(sphere.centre);
+			Vector lightToSphere = sphere.centre.subtract(light.location);
 			Vector lightDirection = lightToSphere.normalise();
 			Vector sphereNormal = sphere.normalAt(intersectionPoint);
-			diffuseIntensity += light.intensity * Math.max(0.0, lightDirection.dot(sphereNormal));
-			double specularPower = -lightDirection.scale(-1.0).reflect(sphereNormal).dot(direction);
-			specularIntensity += Math.pow(Math.max(0.0, specularPower), sphere.material.specularExponent) * light.intensity;
+
+			if (notInShadow(light.location, lightDirection, sphere, renderedSpheres)) {
+				diffuseIntensity += calculateDiffuseIntensity(light, lightDirection, sphereNormal);
+				specularIntensity += calculateSpecularIntensity(light, lightDirection, sphereNormal, sphere, direction);
+			}
 		}
 		return sphere.colourScaled(diffuseIntensity, specularIntensity);
 	}
@@ -51,6 +75,12 @@ public class Renderer {
 
 	public static BufferedImage createImage(Camera camera) {
 		return createImage(camera, 1024, 768);
+	}
+
+	public static Vector calculateCameraDirection(int i, int j) {
+		double x =  (2 * (i + 0.5) / (double) width  - 1.0) * Math.tan(camera.FOV / 2.0) * width / (double) height;
+            	double y = -(2 * (j + 0.5) / (double) height - 1.0) * Math.tan(camera.FOV / 2.0);
+            	return new Vector(x, y, -1.0).normalise();
 	}
 
 	public static BufferedImage createImage(Camera camera, int width, int height) {
@@ -69,9 +99,7 @@ public class Renderer {
 
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
-				double x =  (2 * (i + 0.5) / (double) width  - 1.0) * Math.tan(camera.FOV / 2.0) * width / (double) height;
-            			double y = -(2 * (j + 0.5) / (double) height - 1.0) * Math.tan(camera.FOV / 2.0);
-            			Vector direction = new Vector(x, y, -1.0).normalise();
+            			Vector direction = calculateCameraDirection(i, j);
 				int pixel = traceRay(camera.location, direction, renderedSpheres, lights);
 				frameBuffer.setRGB(i, j, pixel);
 			}
