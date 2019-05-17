@@ -1,17 +1,18 @@
 package raycer;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.awt.image.BufferedImage;
 
 public class Renderer {
 	
-	static int width = 8 * (int) Math.pow(2, 8);
-	static int height = 6 * (int) Math.pow(2, 8);
+	static int width = 8 * (int) Math.pow(2, 10);
+	static int height = 6 * (int) Math.pow(2, 10);
 
 	static RGBColour BACKGROUND_COLOUR = new RGBColour(240, 240, 255);
 
-	static Material RED_SPHERE_MATERIAL = new Material(new RGBColour(230, 15, 53), 0.5, 10);
-	static Material YELLOW_SPHERE_MATERIAL = new Material(new RGBColour(30, 200, 200), 0.5, 50);
+	static Material RED_SPHERE_MATERIAL = new Material(new RGBColour(230, 15, 53), 0.4, 0.3, 10);
+	static Material YELLOW_SPHERE_MATERIAL = new Material(new RGBColour(255, 255, 102), 0.5, 0.1, 50);
 
 	static Camera camera = new Camera(new Vector(0.0, 0.0, 0.0), Math.PI / 2.0);
 	
@@ -65,10 +66,10 @@ public class Renderer {
 
 			boolean isVisible = notInShadow(light.location, lightDirection, sphere, renderedSpheres);
 
-			// if (isVisible) {
+			if (isVisible) {
 				diffuseIntensity += calculateDiffuseIntensity(light, lightDirection, sphereNormal);
 				specularIntensity += calculateSpecularIntensity(light, lightDirection, sphereNormal, sphere, direction);
-			// } 
+			} 
 		}
 		return sphere.colourScaled(diffuseIntensity, specularIntensity);
 	}
@@ -85,14 +86,24 @@ public class Renderer {
             	return new Vector(x, y, -1.0).normalise();
 	}
 
+	public static ArrayList<Sphere> generateSpheres(int numSpheres) {
+		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>();
+		for (int i = 0; i < numSpheres; i ++) {
+				Random randomGenerator = new Random();
+				int x  = randomGenerator.nextInt(50) - 25;
+				int y  = randomGenerator.nextInt(50) - 25;
+				int z  = - randomGenerator.nextInt(25) - 25;
+				int r  = randomGenerator.nextInt(3) + 1;
+				int m  = randomGenerator.nextInt(2);
+				renderedSpheres.add(new Sphere(new Vector(x, y, z), r, m == 1 ? RED_SPHERE_MATERIAL : YELLOW_SPHERE_MATERIAL));	
+		}
+		return renderedSpheres;
+	}
+
 	public BufferedImage createImage(Camera camera, int width, int height) {
 		BufferedImage frameBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>();
-		renderedSpheres.add(new Sphere(new Vector(-3.0, 0.0, -16.0), 2.0, RED_SPHERE_MATERIAL));	
-		renderedSpheres.add(new Sphere(new Vector(-1.0, -1.5, -12.0), 2.0, RED_SPHERE_MATERIAL));	
-		renderedSpheres.add(new Sphere(new Vector(1.5, -1.5, -18.0), 3.0, YELLOW_SPHERE_MATERIAL));
-		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, YELLOW_SPHERE_MATERIAL));	
+		ArrayList<Sphere> renderedSpheres = generateSpheres(100);
 
 		ArrayList<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector(-20.0, 20.0, 20.0), 1.5));
