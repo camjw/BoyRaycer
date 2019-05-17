@@ -19,12 +19,12 @@ public class Material {
 
 	public Material(RGBColour colour) {
 		this.colour = colour;
-		this.albedoDiffuse = 0.7;
-		this.albedoSpecular = 0.3;
+		this.albedoDiffuse = 0.5;
+		this.albedoSpecular = 0.5;
 		this.specularExponent = 10;
 	}
 
 	public RGBColour colourScaled(double diffuseIntensity, double specularIntensity) {
-		return this.colour.scale(diffuseIntensity * albedoDiffuse);
+		return this.colour.scale(diffuseIntensity * albedoDiffuse).add(WHITE.scale(specularIntensity * albedoSpecular));
 	}
 }
