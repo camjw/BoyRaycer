@@ -65,10 +65,10 @@ public class Renderer {
 
 			boolean isVisible = notInShadow(light.location, lightDirection, sphere, renderedSpheres);
 
-			// if (isVisible) {
+			if (isVisible) {
 				diffuseIntensity += calculateDiffuseIntensity(light, lightDirection, sphereNormal);
 				specularIntensity += calculateSpecularIntensity(light, lightDirection, sphereNormal, sphere, direction);
-			// } 
+			} 
 		}
 		return sphere.colourScaled(diffuseIntensity, specularIntensity);
 	}
@@ -91,7 +91,7 @@ public class Renderer {
 		ArrayList<Sphere> renderedSpheres = new ArrayList<Sphere>();
 		renderedSpheres.add(new Sphere(new Vector(-3.0, 0.0, -16.0), 2.0, RED_SPHERE_MATERIAL));	
 		renderedSpheres.add(new Sphere(new Vector(-1.0, -1.5, -12.0), 2.0, RED_SPHERE_MATERIAL));	
-		renderedSpheres.add(new Sphere(new Vector(1.5, -1.5, -18.0), 3.0, YELLOW_SPHERE_MATERIAL));
+		renderedSpheres.add(new Sphere(new Vector(1.5, -0.5, -18.0), 3.0, YELLOW_SPHERE_MATERIAL));
 		renderedSpheres.add(new Sphere(new Vector(7.0, 5.0, -18.0), 4.0, YELLOW_SPHERE_MATERIAL));	
 
 		ArrayList<Light> lights = new ArrayList<Light>();
